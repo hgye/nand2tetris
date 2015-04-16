@@ -1,0 +1,7 @@
+#ignore build out target
+build/
+out/
+target/
+
+*.[ao]
+*.hack
