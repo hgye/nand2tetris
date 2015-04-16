@@ -20,7 +20,7 @@ namespace nand2tetris{
         std::map<std::string, std::bitset<7>> computMap = {
             {"0", 0x2a},
             {"1", 0x3f},
-            {"-1", 0x2a},
+            {"-1", 0x3a},
             {"D", 0x0c},
             {"A", 0x30},
             {"M", 0x70},

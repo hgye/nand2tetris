@@ -93,8 +93,8 @@ int main(int argc, char** argv)
 
         namespace na = nand2tetris::assembler;
 
-        nand2tetris::assembler::parser parser(ifile);
-        nand2tetris::assembler::code code;
+        na::parser parser(ifile);
+        na::code code;
 
         std::string symbol;
         std::string comp;
@@ -109,7 +109,7 @@ int main(int argc, char** argv)
 
             parser.advance();
 
-            nand2tetris::assembler::parser::cTypes ct;
+            na::parser::cTypes ct;
             ct = parser.commandType();
 
             if(ct == na::parser::A_COMMAND){
@@ -117,7 +117,7 @@ int main(int argc, char** argv)
 
                 std::bitset<16> bit_out(std::stoi(symbol));
                 bit_out.reset(15);
-                std::cout << bit_out.to_string() << std::endl;
+                // std::cout << bit_out.to_string() << std::endl;
 
                 outs << bit_out.to_string() << std::endl;
 
@@ -145,7 +145,7 @@ int main(int argc, char** argv)
                 bit_out.set(15);
                 bit_out.set(14);
                 bit_out.set(13);
-                std::cout << bit_out.to_string() << std::endl;
+                //std::cout << bit_out.to_string() << std::endl;
 
                 outs << bit_out.to_string() << std::endl;
             }else{
