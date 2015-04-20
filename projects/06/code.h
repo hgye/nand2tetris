@@ -1,6 +1,9 @@
 #include <string>
 #include <bitset>
 
+#ifndef CODE_H
+#define CODE_H
+
 namespace nand2tetris{
 
     namespace assembler{
@@ -18,3 +21,5 @@ namespace nand2tetris{
         };
     }
 }
+
+#endif /* CODE_H */

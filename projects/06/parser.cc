@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cctype>
 #include <boost/algorithm/string.hpp>
 #include "parser.h"
 
@@ -76,6 +77,7 @@ namespace nand2tetris{
 
             // first is @,
             sym = current.substr(1);
+            checkSym(sym);
 
             return sym;
         }
@@ -124,5 +126,17 @@ namespace nand2tetris{
 
         }
 
+        bool parser::checkSym(std::string &s){
+
+            for(auto c: s){
+                if (isalnum(c) || c == '_' || c == '.'
+                    || c == '$' || c == ':')
+                    continue;
+                else
+                    return false;
+            }
+
+            return true;
+        }
     }
 }

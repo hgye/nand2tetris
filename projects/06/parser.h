@@ -7,25 +7,20 @@
 #include <cctype>
 #include <locale>
 
+#ifndef PARSER_H
+#define PARSER_H
 
 namespace nand2tetris{
 
     namespace assembler{
 
-        const std::map<std::string, int> buildInSym = {
-            {"SP", 0}, {"LCL", 1}, {"ARG", 2}, {"THIS", 3}, {"THAT", 4},
-            {"R0", 0}, {"R1", 1}, {"R2", 2}, {"R3", 3}, {"R4", 4},
-            {"R5", 5}, {"R6", 6}, {"R7", 7}, {"R8", 8}, {"R9", 9},
-            {"R10", 10}, {"R11", 11}, {"R12", 12}, {"R13", 13}, {"R14", 14},
-            {"R15", 15},
-            {"SCREEN", 16384},
-            {"KBD", 24576},
-        };
-
         class parser{
         public:
-            explicit parser(std::string fileName);
+            parser(){};
+            parser(std::string fileName);
             ~parser();
+
+            //parser& operator=(parser& rhs){return *this;}
 
             bool hasMoreCommands();
             void advance();
@@ -42,6 +37,11 @@ namespace nand2tetris{
             std::string jump();
 
         private:
+            bool checkSym(std::string &s);
+
+            std::ifstream input;
+            std::string current;
+
             /*********************************************************************************************************************/
             /* // trim from start                                                                                                */
             /* static inline std::string &ltrim(std::string &s) {                                                                */
@@ -61,10 +61,8 @@ namespace nand2tetris{
             /* }                                                                                                                 */
             /*********************************************************************************************************************/
 
-
-            std::ifstream input;
-            std::string current;
-
         };
     }
 }
+
+#endif /* PARSER_H */

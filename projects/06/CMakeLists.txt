@@ -45,23 +45,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_OUT_DIR} CACHE PATH "execuable dir"
 
 my_cxx_executable(assembler assembler.cc
   code.cc
-  parser.cc)
+  parser.cc
+  symbolTable.cc)
 
 target_link_libraries(assembler boost_program_options)
-
-# include gtest as subdirs
-#set(gtest.SRC ${PROJECT_TOP_DIR}/gtest-1.7.0 CACHE PATH "gtest src dir")
-#add_subdirectory(gtest-1.7.0)
-
-# declare all subdir
-#########################################################
-# set(src_DIR_LIST  #process                            #
-#                   leetcode)                           #
-#                                                       #
-# foreach(el ${src_DIR_LIST})                           #
-#   set( ${el}.SRC ${CMAKE_SOURCE_DIR}/${el})           #
-#   set( t${el}.SRC   ${CMAKE_SOURCE_DIR}/${el}/t${el}) #
-#   add_subdirectory( ${${el}.SRC})                     #
-#   #add_subdirectory( ${t${el}.SRC})                   #
-# endforeach(el ${src_DIR_LIST})                        #
-#########################################################
