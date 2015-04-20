@@ -16,11 +16,9 @@ namespace nand2tetris{
 
         class parser{
         public:
-            parser(){};
-            parser(std::string fileName);
+            //parser(){};
+            explicit parser(std::string fileName);
             ~parser();
-
-            //parser& operator=(parser& rhs){return *this;}
 
             bool hasMoreCommands();
             void advance();

@@ -200,17 +200,17 @@ int main(int argc, char** argv)
         if(SUCCESS != parse_cmdline(argc, argv, ifile, ofile))
             return -1;
 
-        std::fstream outs(ofile, std::ofstream::out);
+        //std::fstream outs(ofile, std::ofstream::out);
 
         namespace na = nand2tetris::assembler;
 
-        na::parser parser(ifile);
-        na::code code;
-        na::symbolTable symbolTable;
-        na::assembler worker(parser, code, symbolTable);
+        //na::parser parser(ifile);
+        //na::code code;
+        //na::symbolTable symbolTable;
+        //na::assembler worker(parser, code, symbolTable);
+        na::assembler worker(ifile, ofile);
 
         // na::parser::cTypes ct;
-        //worker.setParser(parser);
         worker.firstScan();
         worker.secondScan();
 
