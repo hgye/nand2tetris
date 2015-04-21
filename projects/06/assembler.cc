@@ -26,14 +26,17 @@ namespace nand2tetris{
 
             while(parser_.hasMoreCommands()){
                 parser_.advance();
-                last_++;
+
+                if(parser_.effectiveLine())
+                    last_++;
 
                 ct = parser_.commandType();
 
                 if(ct != parser::L_COMMAND) continue;
 
+                // for L_command, need -1 last_
                 if(!symbolTable_.contains(parser_.symbol()))
-                   symbolTable_.addEntry(parser_.symbol(), last_);
+                   symbolTable_.addEntry(parser_.symbol(), --last_);
             }
         }
 
@@ -41,6 +44,7 @@ namespace nand2tetris{
 
             parser::cTypes ct;
 
+            parser_.resetInput();
 
             while(parser_.hasMoreCommands()){
 
@@ -52,7 +56,6 @@ namespace nand2tetris{
                     outAcommand();
                 }else if( ct == parser::C_COMMAND){
                     outCcommand();
-
                 }else {
                     //std::cout << "ct is "<< ct << std::endl;
                     continue;
@@ -60,7 +63,7 @@ namespace nand2tetris{
             }
 
             std::cout << "End of input file" << std::endl;
-            outs_.close();
+
             return;
 
         }
@@ -68,7 +71,7 @@ namespace nand2tetris{
         void assembler::outAcommand(){
 
             std::string symbol = parser_.symbol();
-            bool firstisnum = symbol[0];
+            bool firstisnum = isdigit(symbol[0]);
 
             std::bitset<16> bit_out;
 
@@ -77,8 +80,8 @@ namespace nand2tetris{
                 bit_out = bit_tmp;
             }
             else{ // symbol
-                if(buildInSym.find(symbol) == buildInSym.end() &&
-                   !symbolTable_.contains(symbol))
+                //if(buildInSym.find(symbol) == buildInSym.end() &&
+                if(!symbolTable_.contains(symbol) )
                     symbolTable_.addEntry(symbol, lastVarAddr_++);
 
                 std::bitset<16> bit_tmp( symbolTable_.getAddress(symbol) );
@@ -121,8 +124,8 @@ namespace nand2tetris{
             outs_ << bit_out.to_string() << std::endl;
 
         }
-    }
-} // namespace
+    } // namespace assembler
+} // namespace nand2tetris
 
 
 size_t parse_cmdline(int argc, char** argv, std::string &ifile, std::string &ofile)
@@ -193,7 +196,7 @@ size_t parse_cmdline(int argc, char** argv, std::string &ifile, std::string &ofi
 
 int main(int argc, char** argv)
 {
-    try{
+    //try{
         std::string ifile;
         std::string ofile;
 
@@ -215,12 +218,12 @@ int main(int argc, char** argv)
         worker.secondScan();
 
         std::cout<< "here" << std::endl;
-    }
-    catch(std::invalid_argument e){
-        std::cerr << "Error input " <<
-            e.what() <<  std::endl;
+        //}
+    // catch(std::invalid_argument e){
+    //     std::cerr << "Error input " <<
+    //         e.what() <<  std::endl;
 
-    }
+    // }
     ////////////////////////////////////////
     // catch(std::exception e){           //
     //     std::cerr << "exception e " << //

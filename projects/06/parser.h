@@ -23,6 +23,8 @@ namespace nand2tetris{
             bool hasMoreCommands();
             void advance();
 
+            bool effectiveLine() const;
+
             enum cTypes {A_COMMAND, C_COMMAND, L_COMMAND, N_COMMAND, E_COMMAND};
             cTypes commandType();
 
@@ -33,6 +35,11 @@ namespace nand2tetris{
             std::string dest();
             std::string comp();
             std::string jump();
+
+            void resetInput(){
+                input.clear();
+                input.seekg(0, std::ios::beg);
+            }
 
         private:
             bool checkSym(std::string &s);

@@ -16,7 +16,7 @@ namespace nand2tetris{
             if( (getline(input, current)) != NULL){
 
                 // blank line
-                if(current.empty()) return hasMoreCommands();
+                //if(current.empty()) return hasMoreCommands();
 
                 return true;
             }
@@ -46,6 +46,10 @@ namespace nand2tetris{
 
         }
 
+        bool parser::effectiveLine() const {
+            return !current.empty();
+        }
+
         parser::cTypes parser::commandType(){
 
             auto c=current;
@@ -72,11 +76,17 @@ namespace nand2tetris{
             std::string sym;
 
             parser::cTypes ct = commandType();
-            if(ct != A_COMMAND)
+            if( ct != A_COMMAND && ct != L_COMMAND )
                 return NULL;
 
-            // first is @,
-            sym = current.substr(1);
+            // first is @, (
+            std::size_t pos = current.find(")");
+
+            if(pos == std::string::npos)
+                sym = current.substr(1);
+            else
+                sym = current.substr(1, pos-1); // len is pos plus first @/(
+
             checkSym(sym);
 
             return sym;
