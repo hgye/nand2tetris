@@ -2,13 +2,13 @@
 #include "code.h"
 #include "symbolTable.h"
 
-#ifndef ASSEMBLER_H
-#define ASSEMBLER_H
+#ifndef VM_TRANSLATOR_H
+#define VM_TRANSLATOR_H
 
 namespace nand2tetris{
-    namespace assembler{
+    namespace vm{
 
-        class assembler{
+        class translator{
         public:
 
             explicit assembler(std::string &ifile, std::string &ofile):
@@ -40,4 +40,4 @@ namespace nand2tetris{
     }
 }
 
-#endif /* ASSEMBLER_H */
+#endif /* VM_TRANSLATOR_H */

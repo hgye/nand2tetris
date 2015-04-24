@@ -18,7 +18,7 @@ namespace
 
 
 namespace nand2tetris{
-    namespace assembler{
+    namespace vm{
 
         void assembler::firstScan(){
 
@@ -128,7 +128,7 @@ namespace nand2tetris{
 } // namespace nand2tetris
 
 
-size_t parse_cmdline(int argc, char** argv, std::string &ifile, std::string &ofile)
+size_t parse_cmdline(int argc, char** argv, std::string &dir)
 {
     try
     {
@@ -139,8 +139,8 @@ size_t parse_cmdline(int argc, char** argv, std::string &ifile, std::string &ofi
         po::options_description desc("Options");
         desc.add_options()
             ("help,h", "Print help messages")
-            ("input,f",  po::value(&ifile), "input filename")
-            ("out,o",  po::value(&ofile), "output filename");
+            ("input, i",  po::value(&dir), "input dir");
+
 
         po::variables_map vm;
         po::positional_options_description p;
@@ -197,8 +197,7 @@ size_t parse_cmdline(int argc, char** argv, std::string &ifile, std::string &ofi
 int main(int argc, char** argv)
 {
     //try{
-        std::string ifile;
-        std::string ofile;
+        std::string dir;
 
         if(SUCCESS != parse_cmdline(argc, argv, ifile, ofile))
             return -1;
@@ -224,11 +223,5 @@ int main(int argc, char** argv)
     //         e.what() <<  std::endl;
 
     // }
-    ////////////////////////////////////////
-    // catch(std::exception e){           //
-    //     std::cerr << "exception e " << //
-    //         e.what() << std::endl;     //
-    // }                                  //
-    ////////////////////////////////////////
 
 } // main
