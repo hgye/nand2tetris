@@ -2,11 +2,12 @@
 #include <string>
 
 #include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
 
-#include "parser.h"
-#include "code.h"
-#include "symbolTable.h"
-#include "assembler.h"
+#include "parser.hpp"
+#include "codeWriter.hpp"
+//#include "symbolTable.h"
+#include "vmtranslator.hpp"
 
 namespace
 {
@@ -20,6 +21,7 @@ namespace
 namespace nand2tetris{
     namespace vm{
 
+        /*
         void assembler::firstScan(){
 
             parser::cTypes ct;
@@ -123,7 +125,9 @@ namespace nand2tetris{
 
             outs_ << bit_out.to_string() << std::endl;
 
+
         }
+        */
     } // namespace assembler
 } // namespace nand2tetris
 
@@ -199,22 +203,32 @@ int main(int argc, char** argv)
     //try{
         std::string dir;
 
-        if(SUCCESS != parse_cmdline(argc, argv, ifile, ofile))
+        if(SUCCESS != parse_cmdline(argc, argv, dir))
             return -1;
 
-        //std::fstream outs(ofile, std::ofstream::out);
+        namespace fs = boost::filesystem;
+        fs::path input_dir(dir);
 
-        namespace na = nand2tetris::assembler;
+        if( !fs::exists(input_dir) ) {
+            std::cout << dir << " :directory does not exit!!" << std::endl;
+            return -1;
+        }
 
-        //na::parser parser(ifile);
-        //na::code code;
-        //na::symbolTable symbolTable;
-        //na::assembler worker(parser, code, symbolTable);
-        na::assembler worker(ifile, ofile);
+        if( !fs::is_directory(input_dir)) {
+            std::cout << dir << " is not directory!!" << std::endl;
+            return -1;
+        }
 
-        // na::parser::cTypes ct;
-        worker.firstScan();
-        worker.secondScan();
+        // fs::path::iterator it;
+        const std::string vmsuffix = ".vm";
+        const std::string asmsuffix = ".asm";
+
+        for(fs::directory_iterator it(input_dir); it != fs::directory_iterator(); ++it) {
+            if(it->path().extension() == vmsuffix) {
+                fs::path p = fs::basename(it->path()) + (asmsuffix);
+                std::cout << p << std::endl;
+            }
+        }
 
         std::cout<< "here" << std::endl;
         //}

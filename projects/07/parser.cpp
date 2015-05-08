@@ -1,6 +1,7 @@
 #include <cctype>
 #include <iostream>
-#include <istringsteam>
+#include <string>
+#include <sstream>
 #include <boost/algorithm/string.hpp>
 #include "parser.hpp"
 
@@ -29,8 +30,8 @@ namespace nand2tetris{
 
             boost::algorithm::trim(current_);
 
-            std::istringsteam iss(current_);
-            std::vector<string> tokens_{std::istream_iterator<std::string>{iss},
+            std::istringstream iss(current_);
+            std::vector<std::string> tokens_{std::istream_iterator<std::string>{iss},
                     std::istream_iterator<string>{}};
 
             //tokens_.insert(tokens);

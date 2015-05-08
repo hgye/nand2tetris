@@ -43,9 +43,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_OUT_DIR} CACHE PATH "lib*.a dir")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_OUT_DIR} CACHE PATH "lib*.so dir")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_OUT_DIR} CACHE PATH "execuable dir")
 
-my_cxx_executable(assembler vmtranslator.cpp
-  code.cpp
-  parser.cpp
-  symbolTable.cpp)
+my_cxx_executable(vmtranslator vmtranslator.cpp
+  codeWriter.cpp
+  parser.cpp)
 
-target_link_libraries(assembler boost_program_options)
+target_link_libraries(vmtranslator boost_program_options boost_system boost_filesystem)

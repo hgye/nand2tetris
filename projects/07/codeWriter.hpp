@@ -1,6 +1,6 @@
 #include <string>
 #include <bitset>
-#include <ofstream>
+#include <fstream>
 
 #ifndef CODEWRITER_H
 #define CODEWRITER_H
@@ -11,7 +11,7 @@ namespace nand2tetris{
 
         class codeWriter{
         public:
-            explicit codeWriter(std::ofstream & os){out_ = os;}
+            codeWriter(){};
             ~codeWriter(){out_.close();}
 
             void setFileName(std::string filename);
