@@ -6,7 +6,8 @@ namespace nand2tetris{
 
     namespace vm{
 
-        void codeWriter::setFileName(std::string filename){
+        void codeWriter::setFileName(const std::string & filename){
+            if(out_) out_.close();
             out_.open(filename);
         }
 
@@ -16,10 +17,13 @@ namespace nand2tetris{
             }
             else{
                 out_ << "@SP" << std::endl
-                     << "MA=M-1" << std::endl
+                     << "A=M-1" << std::endl
                      << "D=M" << std::endl
                      << "A=A-1" << std::endl
-                     << "M=M+D" << std::endl;
+                     << "M=M+D" << std::endl
+                     << "D=A" << std::endl
+                     << "@SP" << std::endl
+                     << "M=D+1" << std::endl;
 
                 // if(cmd == "add"){
                 //     out << << std::endl
@@ -37,9 +41,10 @@ namespace nand2tetris{
                     out_ << "@" << index << std::endl
                          << "D=A" << std::endl
                          << "@SP" << std::endl
+                         << "A=M" << std::endl
                          << "M=D" << std::endl
-                         << "D=A+1" << std::endl
-                         << "M=D" << std::endl;
+                         << "@SP" << std::endl
+                         << "M=M+1" << std::endl;
                 }
 
                 return;

@@ -9,7 +9,11 @@ namespace nand2tetris{
 
         class translator{
         public:
+            void work();
 
+        private:
+            parser parser_;
+            codeWriter codeWriter_;
         };
     }
 }

@@ -14,7 +14,7 @@ namespace nand2tetris{
             codeWriter(){};
             ~codeWriter(){out_.close();}
 
-            void setFileName(std::string filename);
+            void setFileName(const std::string & filename);
 
             void writeArithmetic(std::string command);
 

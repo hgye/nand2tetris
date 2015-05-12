@@ -31,10 +31,11 @@ namespace nand2tetris{
             boost::algorithm::trim(current_);
 
             std::istringstream iss(current_);
-            std::vector<std::string> tokens_{std::istream_iterator<std::string>{iss},
-                    std::istream_iterator<string>{}};
+            std::vector<std::string> tokens{
+                std::istream_iterator<std::string>{iss},
+                std::istream_iterator<std::string>{}};
 
-            //tokens_.insert(tokens);
+            tokens_ = tokens;
 
         }
 
@@ -44,7 +45,7 @@ namespace nand2tetris{
 
         parser::cTypes parser::commandType(){
 
-            std::istringsteam line(current_);
+            std::istringstream line(current_);
 
             std::string cmd;
             line >> cmd;
@@ -79,6 +80,10 @@ namespace nand2tetris{
                 return C_RETURN;
             else
                 return C_ERROR;
+        }
+
+        std::string parser::command(){
+            return tokens_[0];
         }
 
         std::string parser::arg1(){

@@ -7,7 +7,7 @@
 #include "parser.hpp"
 #include "codeWriter.hpp"
 //#include "symbolTable.h"
-#include "vmtranslator.hpp"
+//#include "vmtranslator.hpp"
 
 namespace
 {
@@ -17,120 +17,35 @@ namespace
 
 } // namespace
 
-
+/*
 namespace nand2tetris{
     namespace vm{
 
-        /*
-        void assembler::firstScan(){
+
+        void translator::work(){
 
             parser::cTypes ct;
 
             while(parser_.hasMoreCommands()){
                 parser_.advance();
 
-                if(parser_.effectiveLine())
-                    last_++;
-
-                ct = parser_.commandType();
-
-                if(ct != parser::L_COMMAND) continue;
-
-                // for L_command, need -1 last_
-                if(!symbolTable_.contains(parser_.symbol()))
-                   symbolTable_.addEntry(parser_.symbol(), --last_);
-            }
-        }
-
-        void assembler::secondScan(){
-
-            parser::cTypes ct;
-
-            parser_.resetInput();
-
-            while(parser_.hasMoreCommands()){
-
-                parser_.advance();
-
-                ct = parser_.commandType();
-
-                if(ct == parser::A_COMMAND){
-                    outAcommand();
-                }else if( ct == parser::C_COMMAND){
-                    outCcommand();
-                }else {
-                    //std::cout << "ct is "<< ct << std::endl;
+                if(! parser_.effectiveLine())
                     continue;
-                }
+
+                ct = parser_.commandType();
+
+                if(ct == parser::C_ARITHMETIC)
+                    codeWriter_.writeArithmetic(parser_.arg1());
+
+                if(ct == parser::C_POP || ct == parser::C_PUSH)
+                    codeWriter_.writePushPop(parser_.cmd(),
+                                             parser_.arg1(),
+                                             parser_.arg2());
             }
-
-            std::cout << "End of input file" << std::endl;
-
-            return;
-
         }
-
-        void assembler::outAcommand(){
-
-            std::string symbol = parser_.symbol();
-            bool firstisnum = isdigit(symbol[0]);
-
-            std::bitset<16> bit_out;
-
-            if(firstisnum) {
-                std::bitset<16> bit_tmp(std::stoi(symbol));
-                bit_out = bit_tmp;
-            }
-            else{ // symbol
-                //if(buildInSym.find(symbol) == buildInSym.end() &&
-                if(!symbolTable_.contains(symbol) )
-                    symbolTable_.addEntry(symbol, lastVarAddr_++);
-
-                std::bitset<16> bit_tmp( symbolTable_.getAddress(symbol) );
-                bit_out = bit_tmp;
-            }
-
-            bit_out.reset(15);
-            // std::cout << bit_out.to_string() << std::endl;
-
-            outs_ << bit_out.to_string() << std::endl;
-
-        }
-
-        void assembler::outCcommand(){
-
-            std::string comp = parser_.comp();
-            std::string dest = parser_.dest();
-            std::string jump = parser_.jump();
-
-            std::bitset<3> bit_dest = code_.dest(dest);
-            std::bitset<7> bit_comp = code_.comp(comp);
-            std::bitset<3> bit_jump = code_.jump(jump);
-
-            std::bitset<16> bit_out(bit_comp.to_string() +
-                                    bit_dest.to_string() +
-                                    bit_jump.to_string());
-
-
-            // std::cout << "bit_dest.to_string(): " << bit_dest.to_string()
-            //           << "bit_comp.to_string(): " << bit_comp.to_string()
-            //           << "bit_jump.to_string(): " << bit_jump.to_string()
-            //           << "bit_out: " << bit_out
-            //           << std::endl;
-
-            bit_out.set(15);
-            bit_out.set(14);
-            bit_out.set(13);
-            //std::cout << bit_out.to_string() << std::endl;
-
-            outs_ << bit_out.to_string() << std::endl;
-
-
-        }
-        */
-    } // namespace assembler
+    } // namespace vm
 } // namespace nand2tetris
-
+*/
 
 size_t parse_cmdline(int argc, char** argv, std::string &dir)
 {
@@ -198,6 +113,31 @@ size_t parse_cmdline(int argc, char** argv, std::string &dir)
 
 } // parser_cmdline
 
+void work(nand2tetris::vm::parser & parser_,
+          nand2tetris::vm::codeWriter & codeWriter_){
+
+    using namespace nand2tetris::vm;
+
+    parser::cTypes ct;
+
+    while(parser_.hasMoreCommands()){
+        parser_.advance();
+
+        if(! parser_.effectiveLine())
+            continue;
+
+        ct = parser_.commandType();
+
+        if(ct == parser::C_ARITHMETIC)
+            codeWriter_.writeArithmetic(parser_.arg1());
+
+        if(ct == parser::C_POP || ct == parser::C_PUSH)
+            codeWriter_.writePushPop(parser_.command(),
+                                     parser_.arg1(),
+                                     parser_.arg2());
+    }
+}
+
 int main(int argc, char** argv)
 {
     //try{
@@ -222,11 +162,18 @@ int main(int argc, char** argv)
         // fs::path::iterator it;
         const std::string vmsuffix = ".vm";
         const std::string asmsuffix = ".asm";
+        nand2tetris::vm::codeWriter codeWriter;
 
         for(fs::directory_iterator it(input_dir); it != fs::directory_iterator(); ++it) {
             if(it->path().extension() == vmsuffix) {
                 fs::path p = fs::basename(it->path()) + (asmsuffix);
                 std::cout << p << std::endl;
+
+                std::cout << p.c_str() << std::endl;
+
+                nand2tetris::vm::parser parser(fs::absolute(it->path()).string());
+                codeWriter.setFileName(p.string());
+                work(parser, codeWriter);
             }
         }
 

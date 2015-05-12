@@ -28,6 +28,7 @@ namespace nand2tetris{
                          C_FUNCTION, C_RETURN, C_CALL, C_ERROR};
             cTypes commandType();
 
+            std::string command();
             std::string arg1();
             int arg2();
 
