@@ -22,8 +22,11 @@ namespace nand2tetris{
 
             void close();
 
+            static unsigned int label_seq;
+
         private:
             std::ofstream out_;
+
         };
     }
 }

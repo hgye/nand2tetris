@@ -138,6 +138,8 @@ void work(nand2tetris::vm::parser & parser_,
     }
 }
 
+unsigned int nand2tetris::vm::codeWriter::label_seq = 0;
+
 int main(int argc, char** argv)
 {
     //try{
@@ -173,6 +175,7 @@ int main(int argc, char** argv)
 
                 nand2tetris::vm::parser parser(fs::absolute(it->path()).string());
                 codeWriter.setFileName(p.string());
+                nand2tetris::vm::codeWriter::label_seq = 0;
                 work(parser, codeWriter);
             }
         }
