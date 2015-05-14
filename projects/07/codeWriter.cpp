@@ -101,6 +101,20 @@ namespace nand2tetris{
                     return;
                 }
 
+                if(seg == "pointer"){
+                    if(index == 0)
+                        out_ << "@THIS" << std::endl;
+                    else // index == 1
+                        out_ << "@THAT" << std::endl;
+
+                    out_ << "D=M" << std::endl
+                         << "@SP" << std::endl
+                         << "M=M+1" << std::endl
+                         << "A=M-1" << std::endl
+                         << "M=D" << std::endl;
+                    return;
+                }
+
                 if(seg == "local" || seg == "argument" ||
                    seg == "this" || seg == "that" || seg == "temp") {
 
@@ -138,6 +152,21 @@ namespace nand2tetris{
             }
 
             if (cmd == "pop"){
+                if(seg == "pointer"){
+                    out_ << "@SP" << std::endl
+                         << "AM=M-1" << std::endl
+                         << "D=M" << std::endl;
+
+                    if(index == 0)
+                        out_ << "@THIS" << std::endl;
+                    else // index == 1
+                        out_ << "@THAT" << std::endl;
+
+                    out_ << "M=D" << std::endl;
+
+                    return;
+                }
+
                 // for pop, use two indirect address, use SP last as temp
                 if(seg == "temp"){
                     out_ << "@5" << std::endl
