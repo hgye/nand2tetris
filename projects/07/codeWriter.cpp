@@ -97,12 +97,81 @@ namespace nand2tetris{
                          << "M=D" << std::endl
                          << "@SP" << std::endl
                          << "M=M+1" << std::endl;
+
+                    return;
                 }
 
+                if(seg == "local" || seg == "argument" ||
+                   seg == "this" || seg == "that" || seg == "temp") {
+
+                    if( seg == "temp"){
+                        out_ << "@5" << std::endl
+                             << "D=A" << std::endl
+                             << "@" << index << std::endl
+                             << "A=D+A" << std::endl; // D is 5, A is index
+                    }
+                    else{
+                        out_ << "@" << index << std::endl
+                             << "D=A" << std::endl;
+
+                        if(seg == "local")
+                            out_ << "@LCL" << std::endl;
+                        else if(seg == "argument")
+                            out_ << "@ARG" << std::endl;
+                        else if(seg == "this")
+                            out_ << "@THIS" << std::endl;
+                        else// if(seg == "THAT")
+                            out_ << "@THAT" << std::endl;
+
+                        out_ << "A=M+D" << std::endl; // M is seg base, D is index
+                    }
+
+                    // after all of this, A is what we want, and M[A] is right
+                    out_ << "D=M" << std::endl
+                         << "@SP" << std::endl
+                         << "M=M+1" << std::endl
+                         << "A=M-1" << std::endl
+                         << "M=D" << std::endl;
+                }
+                out_ << "// end of push" << std::endl;
                 return;
             }
 
             if (cmd == "pop"){
+                // for pop, use two indirect address, use SP last as temp
+                if(seg == "temp"){
+                    out_ << "@5" << std::endl
+                         << "D=A" << std::endl
+                         << "@" << index << std::endl
+                         << "D=A+D" << std::endl;
+
+                }else{
+                    if(seg == "local")
+                        out_ << "@LCL" << std::endl;
+                    else if(seg == "argument")
+                        out_ << "@ARG" << std::endl;
+                    else if(seg == "this")
+                        out_ << "@THIS" << std::endl;
+                    else // if(seg == "THAT")
+                        out_ << "@THAT" << std::endl;
+
+                    out_ << "D=M" << std::endl // D is M[LCL] ...
+                         << "@" << index << std::endl
+                         << "D=A+D" << std::endl;
+                }
+
+                // D is temp, indirect address for segment
+                out_ << "@SP" << std::endl
+                     << "A=M" << std::endl
+                     << "M=D" << std::endl // store D in SP
+                     << "@SP" << std::endl
+                     << "AM=M-1" << std::endl
+                     << "D=M" << std::endl
+                     << "A=A+1" << std::endl
+                     << "A=M" << std::endl
+                     << "M=D" << std::endl;
+
+                out_<< "// end of pop" << std::endl;
                 return;
             }
 
