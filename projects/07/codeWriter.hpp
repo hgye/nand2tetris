@@ -25,6 +25,21 @@ namespace nand2tetris{
             static unsigned int label_seq;
 
         private:
+            void oneLogicWrite(std::string& cmd);
+            void twoLogicWrite(std::string& cmd);
+            void compareWrite(std::string& cmd);
+            void mathematicsWrite(std::string& cmd);
+
+            void pushConstant(int& index);
+            void pushPointer(int& index);
+            void pushCommon(std::string& seg, int& index);
+            void pushStatic(int & index);
+
+            void popPointer(int& index);
+            void popStatic(int& index);
+            void popCommon(std::string& seg, int& index);
+
+            std::string basename_;
             std::ofstream out_;
 
         };
