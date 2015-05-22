@@ -26,7 +26,7 @@ namespace nand2tetris{
             void writeGoto(std::string label);
             void writeIf(std::string label);
             void writeCall(std::string functionName, int numArgs);
-            void wrtieReturn();
+            void writeReturn();
             void writeFunction(std::string functionName, int numLocals);
 
             static unsigned int label_seq;

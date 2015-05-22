@@ -82,6 +82,93 @@ namespace nand2tetris{
                  << "D;JNE" << std::endl;
         }
 
+
+        void codeWriter::writeFunction(std::string functionName, int numLocals){
+            out_ << "(" << functionName << ")" << std::endl
+                 << "@LCL" <<std::endl
+                 << "A=M" << std::endl;
+
+            for(int i = 0; i < numLocals; i++){
+                out_ << "M=0" << std::endl
+                     << "A=A+1" << std::endl;
+            }
+        }
+
+        void codeWriter::writeReturn(){
+            // R5 is temp, frame pointer
+            // FRAME(r5) = LCL
+            out_ << "@LCL" << std::endl
+                 << "D=M" << std::endl
+                 << "@R5" << std::endl
+                 << "M=D" << std::endl;
+
+            // RET = *(FRAME-5), r6
+            out_ << "@5" << std::endl
+                 << "D=A" << std::endl
+                 << "@LCL" << std::endl
+                 << "A=M-D" << std::endl
+                 << "D=M" << std::endl
+                 << "@R6" << std::endl
+                 << "M=D" << std::endl;
+
+            // *ARG = pop()
+            out_ << "@SP" << std::endl
+                 << "AM=M-1" << std::endl
+                 << "D=M" << std::endl
+                 << "@ARG" << std::endl
+                 << "A=M" << std::endl
+                 << "M=D" << std::endl;
+            //<< "@SP" << std::endl
+            //   << "M=A-1" << std::endl;
+
+            // SP = ARG + 1
+            out_ << "@ARG" << std::endl
+                 << "A=M+1" << std::endl
+                //<< "A=A+1" << std::endl
+                 << "D=A" << std::endl
+                 << "@SP" << std::endl
+                 << "M=D" << std::endl;
+
+            // THAT = *(FRAME - 1)
+            out_ << "@LCL" << std::endl
+                 << "A=M-1" << std::endl
+                 << "D=M" << std::endl
+                 << "@THAT" << std::endl
+                 << "M=D" << std::endl;
+
+            // THIS = *(FRAME - 2)
+            out_ << "@2" << std::endl
+                 << "D=A" <<std::endl
+                 << "@LCL" << std::endl
+                 << "A=M-D" << std::endl
+                 << "D=M" << std::endl
+                 << "@THIS" << std::endl
+                 << "M=D" << std::endl;
+
+            // ARG = *(FRAME - 3)
+            out_ << "@3" << std::endl
+                 << "D=A" <<std::endl
+                 << "@LCL" << std::endl
+                 << "A=M-D" << std::endl
+                 << "D=M" << std::endl
+                 << "@ARG" << std::endl
+                 << "M=D" << std::endl;
+
+            // LCL = *(FRAME - 4)
+            out_ << "@4" << std::endl
+                 << "D=A" << std::endl
+                 << "@R5" << std::endl
+                 << "A=M-D" << std::endl
+                 << "D=M" << std::endl
+                 << "@LCL" << std::endl
+                 << "M=D" << std::endl;
+
+            // goto ret
+            out_ << "@R6" << std::endl
+                 << "A=M" << std::endl
+                 << "0;JMP" << std::endl;
+        }
+
         void codeWriter::oneLogicWrite(std::string & cmd){
             out_ << "@SP" << std::endl
                  << "A=M-1" << std::endl;

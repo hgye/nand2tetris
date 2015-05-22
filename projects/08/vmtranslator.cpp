@@ -131,18 +131,27 @@ void work(nand2tetris::vm::parser & parser_,
         if(ct == parser::C_ARITHMETIC)
             codeWriter_.writeArithmetic(parser_.arg1());
 
-        if(ct == parser::C_POP || ct == parser::C_PUSH)
+        else if(ct == parser::C_POP || ct == parser::C_PUSH)
             codeWriter_.writePushPop(parser_.command(),
                                      parser_.arg1(),
                                      parser_.arg2());
-        if(ct == parser::C_LABEL)
+        else if(ct == parser::C_LABEL)
             codeWriter_.writeLabel(parser_.arg1());
 
-        if(ct == parser::C_IF)
+        else if(ct == parser::C_IF)
             codeWriter_.writeIf(parser_.arg1());
 
-        if(ct == parser::C_GOTO)
+        else if(ct == parser::C_GOTO)
             codeWriter_.writeGoto(parser_.arg1());
+
+        else if(ct == parser::C_FUNCTION)
+            codeWriter_.writeFunction(parser_.arg1(), parser_.arg2());
+
+        else if(ct == parser::C_RETURN)
+            codeWriter_.writeReturn();
+
+        else
+            std::cout << "not translate" << ct << std::endl;
     }
 }
 
