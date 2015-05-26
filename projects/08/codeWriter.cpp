@@ -94,21 +94,89 @@ namespace nand2tetris{
             }
         }
 
-        void codeWriter::writeReturn(){
-            // R5 is temp, frame pointer
-            // FRAME(r5) = LCL
-            out_ << "@LCL" << std::endl
-                 << "D=M" << std::endl
-                 << "@R5" << std::endl
+        void codeWriter::writeCall(std::string functionName, int numArgs){
+            // push return_address
+            out_ << "@" << functionName << "_return_addr"  << std::endl
+                 << "D=A" << std::endl
+                 <<"@SP" << std::endl
+                 << "AM=M+1" << std::endl
+                 << "A=A-1" << std::endl
                  << "M=D" << std::endl;
 
-            // RET = *(FRAME-5), r6
+            // push LCL
+            out_ << "@LCL" << std::endl
+                 << "D=M" << std::endl
+                 << "@SP" << std::endl
+                 << "AM=M+1" << std::endl
+                 << "A=A-1" << std::endl
+                 << "M=D" << std::endl;
+
+            //push ARG
+            out_ << "@ARG" << std::endl
+                 << "D=M" << std::endl
+                 << "@SP" << std::endl
+                 << "AM=M+1" << std::endl
+                 << "A=A-1" << std::endl
+                 << "M=D" << std::endl;
+
+            //push This
+            out_ << "@THIS" << std::endl
+                 << "D=M" << std::endl
+                 << "@SP" << std::endl
+                 << "AM=M+1" << std::endl
+                 << "A=A-1" << std::endl
+                 << "M=D" << std::endl;
+
+            // push that
+            out_ << "@THAT" << std::endl
+                 << "D=M" << std::endl
+                 << "@SP" << std::endl
+                 << "AM=M+1" << std::endl
+                 << "A=A-1" << std::endl
+                 << "M=D" << std::endl;
+
+            // ARG = SP-5-n
+            out_ << "@" << numArgs << std::endl
+                 << "D=A" << std::endl
+                 << "@5" << std::endl
+                 << "D=D+A" << std::endl
+                 << "@SP" << std::endl
+                 << "D=M-D" << std::endl
+                 << "@ARG" << std::endl
+                //    << "A=M" << std::endl
+                 << "M=D" << std::endl;
+
+            // LCL = SP
+            out_ << "@SP" << std::endl
+                 << "D=M" << std::endl
+                //<< "D=M" << std::endl
+                 << "@LCL" << std::endl
+                // << "A=M" << std::endl
+                 << "M=D" << std::endl;
+
+            // goto f
+            out_ << "@" << functionName << std::endl
+                 << "0;JMP" << std::endl;
+
+            out_ << "(" << functionName << "_return_addr" << ")" << std::endl;
+
+        }
+
+        void codeWriter::writeReturn(){
+            // R5 is temp, frame pointer
+            // FRAME(r13) = LCL
+            out_ << "@LCL" << std::endl
+                 << "D=M" << std::endl
+                 << "@R13" << std::endl
+                 << "M=D" << std::endl;
+
+            // RET = *(FRAME-5), r14
             out_ << "@5" << std::endl
                  << "D=A" << std::endl
                  << "@LCL" << std::endl
                  << "A=M-D" << std::endl
                  << "D=M" << std::endl
-                 << "@R6" << std::endl
+                 << "@R14" << std::endl
                  << "M=D" << std::endl;
 
             // *ARG = pop()
@@ -157,14 +225,14 @@ namespace nand2tetris{
             // LCL = *(FRAME - 4)
             out_ << "@4" << std::endl
                  << "D=A" << std::endl
-                 << "@R5" << std::endl
+                 << "@R13" << std::endl
                  << "A=M-D" << std::endl
                  << "D=M" << std::endl
                  << "@LCL" << std::endl
                  << "M=D" << std::endl;
 
             // goto ret
-            out_ << "@R6" << std::endl
+            out_ << "@R14" << std::endl
                  << "A=M" << std::endl
                  << "0;JMP" << std::endl;
         }

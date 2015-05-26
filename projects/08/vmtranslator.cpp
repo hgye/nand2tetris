@@ -147,6 +147,9 @@ void work(nand2tetris::vm::parser & parser_,
         else if(ct == parser::C_FUNCTION)
             codeWriter_.writeFunction(parser_.arg1(), parser_.arg2());
 
+        else if(ct == parser::C_CALL)
+            codeWriter_.writeCall(parser_.arg1(), parser_.arg2());
+
         else if(ct == parser::C_RETURN)
             codeWriter_.writeReturn();
 
