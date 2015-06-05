@@ -7,10 +7,18 @@ namespace nand2tetris{
 
     namespace vm{
 
+        void codeWriter::setBaseName(const std::string & filename){
+            basename_ = filename;
+        }
+
         void codeWriter::setFileName(const std::string & filename){
 
-            std::size_t pos = filename.find(".");
-            basename_ = filename.substr(0, pos);
+            //std::size_t pos1 = filename.rfind("/");
+            //std::size_t pos2 = filename.rfind(".");
+            //basename_ = filename.substr(pos1+1, pos2);
+            //std::cout<< "basename is " <<basename_ << std::endl
+            //         << "pos1 " << pos1 << std::endl
+            //         << "pos2 " << pos2 << std::endl;
 
             // if it was first open, open it then writeInit
             if(!out_.is_open() ) {

@@ -157,7 +157,8 @@ int main(int argc, char** argv)
         fs::path p;
 
         p = input_dir;
-        p /= fs::basename(input_dir) + asmsuffix;
+        //std::cout << p << std::endl;
+        p /= fs::basename(fs::canonical(input_dir)) + asmsuffix;
         std::cout << p << std::endl;
 
         for(fs::directory_iterator it(input_dir); it != fs::directory_iterator(); ++it) {
@@ -169,6 +170,7 @@ int main(int argc, char** argv)
                 //std::cout << p1 << std::endl;
 
                 nand2tetris::vm::parser parser(fs::absolute(it->path()).string());
+                codeWriter.setBaseName( fs::basename(fs::canonical(it->path()) ));
                 codeWriter.setFileName(p.string());
                 nand2tetris::vm::codeWriter::label_seq = 0;
                 work(parser, codeWriter);

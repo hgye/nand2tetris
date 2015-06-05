@@ -14,6 +14,7 @@ namespace nand2tetris{
             codeWriter():currentFunc_(""), nestFuncSeq_(0){};
             ~codeWriter(){out_.close();}
 
+            void setBaseName(const std::string & filename);
             void setFileName(const std::string & filename);
             void close();
 
