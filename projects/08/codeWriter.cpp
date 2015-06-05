@@ -12,8 +12,41 @@ namespace nand2tetris{
             std::size_t pos = filename.find(".");
             basename_ = filename.substr(0, pos);
 
-            if(out_) out_.close();
-            out_.open(filename);
+            // if it was first open, open it then writeInit
+            if(!out_.is_open() ) {
+                out_.open(filename);
+                writeInit();
+            } else {
+                out_.close();
+                out_.open(filename, std::fstream::app);
+            }
+
+            out_ << "// This is " << filename << std::endl;
+        }
+
+        void codeWriter::writeInit(){
+            out_ << "@256" << std::endl
+                 << "D=A" << std::endl
+                 << "@SP" << std::endl
+                 << "M=D" << std::endl;
+
+            for(int i = 1; i < 16 ; i++){
+                out_ << "@" << i << std::endl
+                     << "M=0" << std::endl;
+            }
+                 /////////////////////////////
+                 // << "@LCL" << std::endl  //
+                 // << "M=0" << std::endl   //
+                 // << "@ARG" << std::endl  //
+                 // << "M=0" << std::endl   //
+                 // << "@THIS" << std::endl //
+                 // << "M=0" << std::endl   //
+                 // << "@THAT" << std::endl //
+                 // << "M=0" << std::endl;  //
+                 /////////////////////////////
+
+            writeCall("Sys.init", 0);
+            //writeReturn();
         }
 
         void codeWriter::writeArithmetic(std::string cmd){
@@ -84,6 +117,7 @@ namespace nand2tetris{
 
 
         void codeWriter::writeFunction(std::string functionName, int numLocals){
+
             out_ << "(" << functionName << ")" << std::endl
                  << "@LCL" <<std::endl
                  << "A=M" << std::endl;
@@ -95,8 +129,19 @@ namespace nand2tetris{
         }
 
         void codeWriter::writeCall(std::string functionName, int numArgs){
+
+            // for self call
+            // @notes, @todo, which should use a vector to contain callchain,
+            // need to do future.
+            if( currentFunc_ != functionName ){
+                currentFunc_ = functionName;
+                nestFuncSeq_ = 0;
+            } else{
+                nestFuncSeq_++;
+            }
+
             // push return_address
-            out_ << "@" << functionName << "_return_addr"  << std::endl
+            out_ << "@" << functionName << "_return_addr$"  << nestFuncSeq_ << std::endl
                  << "D=A" << std::endl
                  <<"@SP" << std::endl
                  << "AM=M+1" << std::endl
@@ -155,10 +200,11 @@ namespace nand2tetris{
                  << "M=D" << std::endl;
 
             // goto f
-            out_ << "@" << functionName << std::endl
+            out_ << "@" << functionName  << std::endl
                  << "0;JMP" << std::endl;
 
-            out_ << "(" << functionName << "_return_addr" << ")" << std::endl;
+            // function return addr
+            out_ << "(" << functionName << "_return_addr$" << nestFuncSeq_ << ")" << std::endl;
 
         }
 
@@ -270,6 +316,8 @@ namespace nand2tetris{
                  << "D=M" << std::endl
                  << "A=A-1" << std::endl
                  << "D=M-D" << std::endl
+                //<< "@SP" << std::endl
+                // << "M=M-1" << std::endl // compare means sp=sp-2
                  << "@label" << label_seq << std::endl;
 
             if(cmd == "eq")

@@ -17,36 +17,6 @@ namespace
 
 } // namespace
 
-/*
-namespace nand2tetris{
-    namespace vm{
-
-
-        void translator::work(){
-
-            parser::cTypes ct;
-
-            while(parser_.hasMoreCommands()){
-                parser_.advance();
-
-                if(! parser_.effectiveLine())
-                    continue;
-
-                ct = parser_.commandType();
-
-                if(ct == parser::C_ARITHMETIC)
-                    codeWriter_.writeArithmetic(parser_.arg1());
-
-                if(ct == parser::C_POP || ct == parser::C_PUSH)
-                    codeWriter_.writePushPop(parser_.cmd(),
-                                             parser_.arg1(),
-                                             parser_.arg2());
-            }
-        }
-    } // namespace vm
-} // namespace nand2tetris
-*/
-
 size_t parse_cmdline(int argc, char** argv, std::string &dir)
 {
     try
@@ -169,7 +139,7 @@ int main(int argc, char** argv)
             return -1;
 
         namespace fs = boost::filesystem;
-        fs::path input_dir(dir);
+        const fs::path input_dir(dir);
 
         if( !fs::exists(input_dir) ) {
             std::cout << dir << " :directory does not exit!!" << std::endl;
@@ -181,17 +151,22 @@ int main(int argc, char** argv)
             return -1;
         }
 
-        // fs::path::iterator it;
         const std::string vmsuffix = ".vm";
         const std::string asmsuffix = ".asm";
         nand2tetris::vm::codeWriter codeWriter;
+        fs::path p;
+
+        p = input_dir;
+        p /= fs::basename(input_dir) + asmsuffix;
+        std::cout << p << std::endl;
 
         for(fs::directory_iterator it(input_dir); it != fs::directory_iterator(); ++it) {
             if(it->path().extension() == vmsuffix) {
-                fs::path p = fs::basename(it->path()) + (asmsuffix);
-                std::cout << p << std::endl;
-
-                std::cout << p.c_str() << std::endl;
+                //fs::path p1 = fs::basename(it->path()) + (asmsuffix);
+                //p = input_dir;
+                //p /= p1;
+                //std::cout << p << std::endl;
+                //std::cout << p1 << std::endl;
 
                 nand2tetris::vm::parser parser(fs::absolute(it->path()).string());
                 codeWriter.setFileName(p.string());

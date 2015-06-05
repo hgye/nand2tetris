@@ -11,7 +11,7 @@ namespace nand2tetris{
 
         class codeWriter{
         public:
-            codeWriter(){};
+            codeWriter():currentFunc_(""), nestFuncSeq_(0){};
             ~codeWriter(){out_.close();}
 
             void setFileName(const std::string & filename);
@@ -48,6 +48,8 @@ namespace nand2tetris{
 
             std::string basename_;
             std::ofstream out_;
+            std::string currentFunc_;
+            unsigned int nestFuncSeq_;
 
         };
     }
