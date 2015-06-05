@@ -1,6 +1,8 @@
 #include <iostream>
 #include <map>
 #include <map>
+#include <algorithm>
+
 #include "codeWriter.hpp"
 
 namespace nand2tetris{
@@ -12,13 +14,6 @@ namespace nand2tetris{
         }
 
         void codeWriter::setFileName(const std::string & filename){
-
-            //std::size_t pos1 = filename.rfind("/");
-            //std::size_t pos2 = filename.rfind(".");
-            //basename_ = filename.substr(pos1+1, pos2);
-            //std::cout<< "basename is " <<basename_ << std::endl
-            //         << "pos1 " << pos1 << std::endl
-            //         << "pos2 " << pos2 << std::endl;
 
             // if it was first open, open it then writeInit
             if(!out_.is_open() ) {
@@ -42,19 +37,8 @@ namespace nand2tetris{
                 out_ << "@" << i << std::endl
                      << "M=0" << std::endl;
             }
-                 /////////////////////////////
-                 // << "@LCL" << std::endl  //
-                 // << "M=0" << std::endl   //
-                 // << "@ARG" << std::endl  //
-                 // << "M=0" << std::endl   //
-                 // << "@THIS" << std::endl //
-                 // << "M=0" << std::endl   //
-                 // << "@THAT" << std::endl //
-                 // << "M=0" << std::endl;  //
-                 /////////////////////////////
 
             writeCall("Sys.init", 0);
-            //writeReturn();
         }
 
         void codeWriter::writeArithmetic(std::string cmd){
@@ -141,12 +125,16 @@ namespace nand2tetris{
             // for self call
             // @notes, @todo, which should use a vector to contain callchain,
             // need to do future.
-            if( currentFunc_ != functionName ){
-                currentFunc_ = functionName;
+
+            if(find(currentCallChains_.begin(), currentCallChains_.end(), functionName)
+               == currentCallChains_.end()){
+                //currentFunc_ = functionName;
                 nestFuncSeq_ = 0;
             } else{
                 nestFuncSeq_++;
             }
+
+            currentCallChains_.push_back(functionName);
 
             // push return_address
             out_ << "@" << functionName << "_return_addr$"  << nestFuncSeq_ << std::endl
@@ -289,6 +277,8 @@ namespace nand2tetris{
             out_ << "@R14" << std::endl
                  << "A=M" << std::endl
                  << "0;JMP" << std::endl;
+
+            currentCallChains_.pop_back();
         }
 
         void codeWriter::oneLogicWrite(std::string & cmd){

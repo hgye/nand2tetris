@@ -1,6 +1,7 @@
 #include <string>
 #include <bitset>
 #include <fstream>
+#include <vector>
 
 #ifndef CODEWRITER_H
 #define CODEWRITER_H
@@ -11,7 +12,7 @@ namespace nand2tetris{
 
         class codeWriter{
         public:
-            codeWriter():currentFunc_(""), nestFuncSeq_(0){};
+            codeWriter(): nestFuncSeq_(0){};
             ~codeWriter(){out_.close();}
 
             void setBaseName(const std::string & filename);
@@ -49,7 +50,7 @@ namespace nand2tetris{
 
             std::string basename_;
             std::ofstream out_;
-            std::string currentFunc_;
+            std::vector<std::string> currentCallChains_;
             unsigned int nestFuncSeq_;
 
         };
